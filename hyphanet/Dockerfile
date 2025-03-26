@@ -1,5 +1,5 @@
-FROM jdk9:alpine AS base
-RUN apk add --no-cache openssh-server
+FROM eclipse-temurin:11-jre-alpine AS base
+RUN apk add --no-cache openssh-server sudo
 
 
 FROM base AS install
@@ -21,7 +21,7 @@ RUN sudo chown -R $user:$user $home && \
     sudo chmod ug+x setup.sh && \
     ./setup.sh
 
-COPY files/hyphanet.sh ./
+COPY files/* ./
 EXPOSE 22
 
 ENV OUTPUT_BANDWIDTH=100000000 \

@@ -39,13 +39,17 @@ else
     echo "Output: ${OUTPUT_BANDWIDTH}"
     echo "Store: ${STORE_SIZE}"
 
+    # Persistent configuration
+    if [ ! -f "data/freenet.ini" ]; then
+        cp freenet_sample.ini data/freenet.ini
+    fi
+    ln -sf data/freenet.ini freenet.ini
+
     # IO bandwidth and datastore size need customizing
     sed -i "s/{{ output_bandwidth }}/${OUTPUT_BANDWIDTH}/g" freenet.ini
     sed -i "s/{{ input_bandwidth }}/${INPUT_BANDWIDTH}/g" freenet.ini
     sed -i "s/{{ store_size }}/${STORE_SIZE}/g" freenet.ini
 
-    # Persistent configuration
-    ln -s data/freenet.ini freenet.ini
 
     # Persistent directories
     mkdir -p data/persistent-temp &&
@@ -56,4 +60,5 @@ else
         ln -s "${PWD}/data/datastore" "datastore"
 
     java -Xmx1500m -Xss512k -Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0 --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED  -cp bcprov-jdk15on-1.59.jar:freenet-ext.jar:freenet.jar:jna-4.5.2.jar:jna-platform-4.5.2.jar:pebble-3.1.5.jar:unbescape-1.1.6.RELEASE.jar:slf4j-api-1.7.25.jar freenet.node.NodeStarter
+    # ./run.sh console
 fi
